@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/style.css"/>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        function createTable(){
+            var table = document.getElementById('practice_tb');
+            table.width = "100%";
+            table.border = 1;
+
+            var tr,td;
+            for(var i=0;i<30;i++){
+                //循环插入元素
+                tr = table.insertRow(table.rows.length);
+                for(var j=0;j<3;j++){
+                    td = tr.insertCell(tr.cells.length);
+                    if (j==0){
+                        td.innerHTML = table.rows.length + 1;
+                        td.width=50;
+                        td.align = "center";
+                    }
+                    if (j==1){
+                        div = document.createElement("div");
+                        div.setAttribute("style", "width:100%;word-wrap:break-word;")
+                        div.innerHTML = "编辑################################################################################################################";
+                        td.appendChild(div);
+                        td.align = "left";
+                    }
+                    if (j==2){
+                        edit_button= document.createElement("button");
+                        edit_button.setAttribute("class", "btn btn-primary form-control")
+                        edit_button.setAttribute("style", "margin-right:5px;")
+                        edit_button.setAttribute("onclick", "javascrtpt:window.open('/editor/')")
+                        edit_button.innerHTML = "编辑";
+                        status_button= document.createElement("button");
+                        status_button.setAttribute("class", "btn btn-primary form-control")
+                        status_button.innerHTML = "查看学生数据";
+                        td.appendChild(edit_button);
+                        td.appendChild(status_button);
+                        td.width=180;
+                        td.align = "center";
+                    }
+                }
+            }
+        }
+
+
+    </script>
+</head>
+<body onload="createTable()">
+<div id="layout">
+    <header>
+        <h1>Linux教学平台教师端</h1>
+    </header>
+</div>
+
+<hr>
+<div id="tb" style="float:left; width:50%; height:760px; overflow-y:scroll;">
+    <table id="practice_tb" style="table-layout:fixed;"></table>
+</div>
+<div id="status" style="float:right; width:50%; height:760px; overflow-y:scroll;">
+    <iframe style="float:right; width:100%;height:100%;border:0;" src="/student_status/"></iframe>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    $("#tb").scroll(function(){
+        var h = $(this).height();//div可视区域的高度
+        var sh = $(this)[0].scrollHeight - 1;//滚动的高度，$(this)指代jQuery对象，而$(this)[0]指代的是dom节点
+        var st =$(this)[0].scrollTop;//滚动条的高度，即滚动条的当前位置到div顶部的距离
+        if(h+st>=sh){
+             createTable()
+        }
+    })
+
+
+</script>

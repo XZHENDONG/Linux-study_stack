@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆页面</title>
+    <link rel="stylesheet" type="text/css" href="/css/login.css"/>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+<div id="login">
+    <h1>Linux实践教学平台教师端</h1>
+    <form action="/api/v1/login/" method="post" role="form">
+        <input type="text" required="required" placeholder="用户名" name="username"></input>
+        <input type="password" required="required" placeholder="密码" name="passwd"></input>
+        <button class="but" type="button">登录</button>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('.but').click(function(){
+            var username=$('input[name="username"]').val();
+            var passwd=$('input[name="passwd"]').val();
+            $.ajax({
+                url:'/api/v1/login/',
+                data:JSON.stringify({'username':username,'passwd':passwd}),
+                contentType: 'application/json; charset=UTF-8',
+                type:'POST',
+                dataType:'json'
+            }).done(function(data){
+                if(data.status){
+                    alert(data.message);
+                    window.location.href='/';
+                }else{
+                    alert(data.error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

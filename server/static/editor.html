@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8"/>
+    <title>编辑页--Linux实践教学平台教师端</title>
+
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/editormd.css"/>
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon"/>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/editormd.min.js"></script>
+    <script type="text/javascript">
+			var testEditor;
+
+            $(function() {
+                testEditor = editormd("test-editormd", {
+                    width   : "80%",
+                    height  : 800,
+                    syncScrolling : "single",
+                    path    : "../lib/",
+                    htmlDecode : "style,script,iframe|on*",
+                    editorTheme : "pastel-on-dark",
+                    searchReplace : true,
+                    saveHTMLToTextarea : true,
+                    imageUpload : true,
+                    imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                    imageUploadURL : "./upload/",
+                    emoji : true,
+                    taskList : true,
+                    tocm     : true,         // Using [TOCM]
+                    tex : true,                   // 开启科学公式TeX语言支持，默认关闭
+                    flowChart : true,             // 开启流程图支持，默认关闭
+                    sequenceDiagram : true,
+                    toolbarIcons : function() {
+                        var full=editormd.toolbarModes["full"]; // full, simple, mini
+                        full.unshift("save","|");
+                        full.pop();
+                        return full;
+                    },
+                    toolbarIconTexts : {
+                        save : "提交文档"  // 指定一个FontAawsome的图标类
+                    },
+                    toolbarHandlers : {
+                        save : function() {
+                            var practices = {"markdown":testEditor.getMarkdown(),"html":testEditor.getHTML()}
+                            $.ajax({
+                                url:'/api/v1/practices',
+                                data:JSON.stringify(practices) ,
+                                contentType: 'application/json; charset=UTF-8',
+                                type:'POST',
+                                dataType:'json'
+                            })
+                        }
+                    }
+                });
+            });
+
+
+
+
+
+    </script>
+
+</head>
+<body>
+<div id="layout">
+    <header>
+        <h1>Linux实践教学平台教师端</h1>
+    </header>
+    <div id="test-editormd">
+        <textarea style="display:none;">###这里写题目
+xxxxxxx
+###checker定义说明
+以json格式定义checker
+服务器会从Markdown中的最后一个 ```json 字符串开始解析checker，即本文中最后一段代码块。
+**请注意json内容必须包含在标注为代码块内**
+json格式为{"checker":[{checker1},{checker2}...]}
+checker中需包含以下内容：
+* title：checker标题，必须存在，不可为空。
+* command：用于检查的Linux命令。
+* stdout：检查命令的标准输出中包含的关键字符串。运行命令的客户端使用正则匹配，所以只需填写输出中部分关键字符即可。
+* stderr：检查命令的标准错误输出中包含的关键字符串。运行命令的客户端使用正则匹配，所以只需填写输出中部分关键字符即可。
+
+↑↑↑↑↑↑↑↑↑↑↑↑↑↑上面内容包括这一行和下一行会被服务器解析为题目↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓服务器会将以下json内容解析为checker↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+```json
+{
+"checker":[
+		{
+			"title":"检查是否有运行ls命令",
+			"command":"history | grep ls",
+			"stdout":"ls",
+			"stderr":"",
+		},
+		{
+			"title":"检查apache是否有监听8080端口",
+			"command":"netstat -ltn|grep apache|grep 8080",
+			"stdout":"8080",
+			"stderr":"",
+		},
+	]
+}
+```</textarea>
+    </div>
+
+</div>
+</body>
+</html>
