@@ -1,47 +1,48 @@
+
+
+page=0
 function requestTable(){
+
     ajax=$.ajax({
         url:'/api/v1/practices',
-        data:{"table_rows":document.getElementById('practice_tb').rows.length},
+        data:{"table_rows":page},
         contentType: 'application/json; charset=UTF-8',
         type:'GET',
         dataType:'json',
         statusCode: {
-                404: function() {
-                    document.getElementById("load_exerc").innerHTML = "已加载全部题目";
-                },
-                200: function() {
-                    createTable();
-                }
-        }
-    }).done(function(data){
-        if(data.status){
-            alert(data.message);
-        }else{
-            alert(data.error);
-        }
+            404: function() {
+              alert( "已加载全部题目" );
+              document.getElementById("load_exerc").innerHTML = "已加载全部题目";
+            }
+          }
+    }).done(function(){
+            responseText=ajax.responseJSON
+            page=responseText.next_page
+            createTable(responseText.exerc)
     });
 
 }
 
-function createTable(){
+function createTable(title_list){
+    alert(title_list)
     var table = document.getElementById('practice_tb');
     table.width = "100%";
     table.border = 1;
     var tr,td;
-    for(var i=0;i<10;i++){
+    for(var i in title_list){
         //循环插入元素
         tr = table.insertRow(table.rows.length);
         for(var j=0;j<3;j++){
             td = tr.insertCell(tr.cells.length);
             if (j==0){
-                td.innerHTML = table.rows.length;
+                td.innerHTML = title_list[i].exerc_id;
                 td.width=50;
                 td.align = "center";
             }
             if (j==1){
                 div = document.createElement("div");
                 div.setAttribute("style", "width:100%;word-wrap:break-word;")
-                div.innerHTML = "编辑################################################################################################################";
+                div.innerHTML = title_list[i].exerc_markdown.trim().split('\n')[0].replace(/^#+/,'');
                 td.appendChild(div);
                 td.align = "left";
             }

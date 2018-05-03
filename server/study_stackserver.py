@@ -15,6 +15,7 @@ from server.db_model import *
 API_VERSION = '/api/v1'
 app = Flask(__name__, static_url_path='')
 app.config.from_object(config)
+app.config.update(RESTFUL_JSON=dict(ensure_ascii=False))
 api = Api(app)
 login_manager = LoginManager()
 login_manager.login_view = '/login/'
@@ -46,9 +47,38 @@ api.add_resource(LoginAPI, API_VERSION + '/login/', '/login/')
 
 class Practice(Resource):
 	def get(self):
-		page = int(request.args.get('table_rows')) / 10 + 1
-		result = Exercise.query.paginate(page, per_page=10)
-		return page
+		# page = int(request.args.get('table_rows')) / 10 + 1
+		if request.args.get('exerc_id'):
+			result = Checker.query.filter_by(execID=request.args.get('exerc_id')).all()
+			respone = {}
+			respone['exerc_markdown'] = result[0].exercise.title
+			respone['exerc_html'] = result[0].exercise.title_html
+			respone['checker'] = []
+			for i in result:
+				check_dict = {}
+				check_dict['ID'] = i.ID
+				check_dict['title'] = i.title
+				check_dict['command'] = i.command
+				check_dict['stdout'] = i.stdout
+				check_dict['stderr'] = i.stderr
+				check_dict['score'] = i.score
+				respone['checker'].append(check_dict)
+			return respone
+		if request.args.get('table_rows'):
+			page = int(request.args.get('table_rows')) + 1
+			result = Exercise.query.paginate(page, per_page=10)
+			respone = {}
+			respone['next'] = result.has_next
+			respone['next_page'] = result.page + 1
+			respone['exerc']=[]
+			respone['exerc'] = []
+			for i in result.items:
+				exerc_dict = {}
+				exerc_dict['exerc_id'] = i.ID
+				exerc_dict['exerc_markdown'] = i.title
+				exerc_dict['exerc_html'] = i.title_html
+				respone['exerc'].append(exerc_dict)
+			return respone
 	
 	def post(self):
 		markdown = request.json['markdown']
@@ -60,7 +90,7 @@ class Practice(Resource):
 		title = markdown[0].strip()
 		checker_json = markdown[-1].strip('```')
 		checker_dict = demjson.decode(checker_json, encoding='utf8')
-		exerc = Exercise(title=title, title_html=title_html)
+		exerc = Exercise(title=request.json['markdown'], title_html=request.json['html'])
 		db.session.add(exerc)
 		db.session.commit()
 		for checker in checker_dict['checker']:
