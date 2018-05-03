@@ -53,11 +53,14 @@ class Practice(Resource):
 		markdown = request.json['markdown']
 		markdown = markdown.split('```json')
 		markdown[0] = ''.join(markdown[0:-1])
-		print markdown
+		html = request.json['html']
+		html = html.split('<pre><code class="lang-json">')
+		title_html = ''.join(html[0:-1])
 		title = markdown[0].strip()
 		checker_json = markdown[-1].strip('```')
 		checker_json = demjson.decode(checker_json)
-		print title
+		Exercise(title=title,title_html=title_html)
+		print title_html
 		print checker_json
 
 

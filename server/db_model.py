@@ -25,7 +25,7 @@ class Exercise(db.Model):
 	
 	ID = db.Column(db.Integer, primary_key=True)
 	title = db.Column(db.Text, nullable=False)
-	author = db.Column(db.String(20))
+	title_html = db.Column(db.Text, nullable=False)
 
 
 class User(UserMixin, db.Model):

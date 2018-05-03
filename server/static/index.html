@@ -18,7 +18,7 @@
                 for(var j=0;j<3;j++){
                     td = tr.insertCell(tr.cells.length);
                     if (j==0){
-                        td.innerHTML = table.rows.length + 1;
+                        td.innerHTML = table.rows.length;
                         td.width=50;
                         td.align = "center";
                     }
@@ -48,12 +48,16 @@
         }
 
 
+
     </script>
 </head>
 <body onload="createTable()">
 <div id="layout">
     <header>
-        <h1>Linux教学平台教师端</h1>
+        <h1 style="display: inline-block;" >Linux教学平台教师端</h1>
+        <button class="btn btn-primary form-control" style="float:right;"
+                onclick="javascrtpt:window.open('/editor/')">新增题目
+        </button>
     </header>
 </div>
 
@@ -75,6 +79,7 @@
              createTable()
         }
     })
+
 
 
 </script>
