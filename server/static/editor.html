@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
     <meta charset="utf-8"/>
     <title>编辑页--Linux实践教学平台教师端</title>
@@ -49,7 +49,13 @@
                                 contentType: 'application/json; charset=UTF-8',
                                 type:'POST',
                                 dataType:'json'
-                            })
+                            }).done(function(data){
+                                if(data.status){
+                                    alert(data.message);
+                                }else{
+                                    alert(data.error);
+                                }
+                            });
                         }
                     }
                 });
@@ -80,6 +86,7 @@ checker中需包含以下内容：
 * command：用于检查的Linux命令。
 * stdout：检查命令的标准输出中包含的关键字符串。运行命令的客户端使用正则匹配，所以只需填写输出中部分关键字符即可。
 * stderr：检查命令的标准错误输出中包含的关键字符串。运行命令的客户端使用正则匹配，所以只需填写输出中部分关键字符即可。
+* score：学生通过对应checker可以获得的分数。
 
 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑上面内容包括这一行和下一行会被服务器解析为题目↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓服务器会将以下json内容解析为checker↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
@@ -91,12 +98,14 @@ checker中需包含以下内容：
 			"command":"history | grep ls",
 			"stdout":"ls",
 			"stderr":"",
+			"score":50,
 		},
 		{
 			"title":"检查apache是否有监听8080端口",
 			"command":"netstat -ltn|grep apache|grep 8080",
 			"stdout":"8080",
 			"stderr":"",
+			"score":50,
 		},
 	]
 }

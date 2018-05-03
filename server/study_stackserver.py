@@ -46,8 +46,9 @@ api.add_resource(LoginAPI, API_VERSION + '/login/', '/login/')
 
 class Practice(Resource):
 	def get(self):
-		result = Exercise.query.all()
-		return result
+		page = int(request.args.get('table_rows')) / 10 + 1
+		result = Exercise.query.paginate(page, per_page=10)
+		return page
 	
 	def post(self):
 		markdown = request.json['markdown']
@@ -58,10 +59,23 @@ class Practice(Resource):
 		title_html = ''.join(html[0:-1])
 		title = markdown[0].strip()
 		checker_json = markdown[-1].strip('```')
-		checker_json = demjson.decode(checker_json)
-		Exercise(title=title,title_html=title_html)
-		print title_html
-		print checker_json
+		checker_dict = demjson.decode(checker_json, encoding='utf8')
+		exerc = Exercise(title=title, title_html=title_html)
+		db.session.add(exerc)
+		db.session.commit()
+		for checker in checker_dict['checker']:
+			try:
+				checker = Checker(execID=exerc.ID,
+				                  title=checker['title'],
+				                  command=checker['command'],
+				                  stdout=checker['stdout'],
+				                  stderr=checker['stderr'],
+				                  score=checker['score'])
+				db.session.add(checker)
+				db.session.commit()
+				return {"status": 1, "message": exerc.ID}
+			except Exception as e:
+				return {"status": 0, "error": e}
 
 
 api.add_resource(Practice, API_VERSION + '/practices')
