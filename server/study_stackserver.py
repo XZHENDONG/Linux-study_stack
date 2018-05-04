@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 import demjson
-from flask import Flask, request, jsonify, url_for, Response
+from flask import Flask, request, jsonify, url_for, Response, render_template
 from flask_login import login_required, login_user
 from flask_login.login_manager import LoginManager
 from flask_restful import Resource, Api
@@ -70,7 +70,7 @@ class Practice(Resource):
 			respone = {}
 			respone['next'] = result.has_next
 			respone['next_page'] = result.page + 1
-			respone['exerc']=[]
+			respone['exerc'] = []
 			respone['exerc'] = []
 			for i in result.items:
 				exerc_dict = {}
@@ -84,10 +84,6 @@ class Practice(Resource):
 		markdown = request.json['markdown']
 		markdown = markdown.split('```json')
 		markdown[0] = ''.join(markdown[0:-1])
-		html = request.json['html']
-		html = html.split('<pre><code class="lang-json">')
-		title_html = ''.join(html[0:-1])
-		title = markdown[0].strip()
 		checker_json = markdown[-1].strip('```')
 		checker_dict = demjson.decode(checker_json, encoding='utf8')
 		exerc = Exercise(title=request.json['markdown'], title_html=request.json['html'])
@@ -103,9 +99,31 @@ class Practice(Resource):
 				                  score=checker['score'])
 				db.session.add(checker)
 				db.session.commit()
-				return {"status": 1, "message": exerc.ID}
+				return {"status": 1, "message": '题目创建成功'}
 			except Exception as e:
 				return {"status": 0, "error": e}
+	
+	def put(self):
+		try:
+			result = Exercise.query.get(request.json['exerc_id'])
+			result.title = request.json['markdown']
+			result.title_html = request.json['html']
+			db.session.commit()
+			return {'status': 1, 'message': '保存成功'}
+		except Exception as e:
+			return {'status': 0, 'error': e}
+	
+	def delete(self):
+		print request.json
+		try:
+			result = Checker.query.filter_by(execID=int(request.json['delect_id'])).all()
+			for i in result:
+				db.session.delete(i)
+			db.session.delete(result[0].exercise)
+			db.session.commit()
+			return {'status': 1, 'message': '删除成功'}
+		except Exception as e:
+			return {'status': 0, 'error': e}
 
 
 api.add_resource(Practice, API_VERSION + '/practices')
@@ -117,9 +135,12 @@ def index():
 	return app.send_static_file('index.html')
 
 
-@app.route('/editor/', methods=['GET', 'POST'])
+@app.route('/editor/', methods=['GET'])
 @login_required
 def editor():
+	if request.args.get('exerc_id'):
+		result = Checker.query.filter_by(execID=request.args.get('exerc_id')).all()
+		return render_template('editor.html', exerc_id=result[0].exercise.ID, exerc=result[0].exercise.title)
 	return app.send_static_file('editor.html')
 
 
