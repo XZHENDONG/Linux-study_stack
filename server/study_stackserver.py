@@ -35,7 +35,7 @@ class LoginAPI(Resource):
 		user = User.query.filter_by(account=request.json['username']).first()
 		if user and user.passwd == request.json['passwd']:
 			login_user(user)
-			return jsonify({'status': 1, 'message': 'welcome:' + user.username})
+			return jsonify({'status': 1, 'message': user.username, 'user_id': user.ID})
 		return jsonify({'status': 0, 'error': '用户不存在或密码错误'})
 	
 	def get(self):
@@ -50,20 +50,22 @@ class Practice(Resource):
 		# page = int(request.args.get('table_rows')) / 10 + 1
 		if request.args.get('exerc_id'):
 			result = Checker.query.filter_by(execID=request.args.get('exerc_id')).all()
-			respone = {}
-			respone['exerc_markdown'] = result[0].exercise.title
-			respone['exerc_html'] = result[0].exercise.title_html
-			respone['checker'] = []
-			for i in result:
-				check_dict = {}
-				check_dict['ID'] = i.ID
-				check_dict['title'] = i.title
-				check_dict['command'] = i.command
-				check_dict['stdout'] = i.stdout
-				check_dict['stderr'] = i.stderr
-				check_dict['score'] = i.score
-				respone['checker'].append(check_dict)
-			return respone
+			if result:
+				respone = {}
+				respone['exerc_markdown'] = result[0].exercise.title
+				respone['exerc_html'] = result[0].exercise.title_html
+				respone['checker'] = []
+				for i in result:
+					check_dict = {}
+					check_dict['ID'] = i.ID
+					check_dict['title'] = i.title
+					check_dict['command'] = i.command
+					check_dict['stdout'] = i.stdout
+					check_dict['stderr'] = i.stderr
+					check_dict['score'] = i.score
+					respone['checker'].append(check_dict)
+				return respone
+			return
 		if request.args.get('table_rows'):
 			page = int(request.args.get('table_rows')) + 1
 			result = Exercise.query.paginate(page, per_page=10)
@@ -99,7 +101,7 @@ class Practice(Resource):
 				                  score=checker['score'])
 				db.session.add(checker)
 				db.session.commit()
-				return {"status": 1, "message": '题目创建成功'}
+				return {"status": 1, "message": '题目创建成功', "exerc_id": exerc.ID}
 			except Exception as e:
 				return {"status": 0, "error": e}
 	
@@ -116,7 +118,7 @@ class Practice(Resource):
 	def delete(self):
 		print request.json
 		try:
-			result = Checker.query.filter_by(execID=int(request.json['delect_id'])).all()
+			result = Checker.query.filter_by(execID=int(request.json['delete_id'])).all()
 			for i in result:
 				db.session.delete(i)
 			db.session.delete(result[0].exercise)

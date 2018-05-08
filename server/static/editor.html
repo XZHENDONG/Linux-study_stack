@@ -52,6 +52,7 @@
                             }).done(function(data){
                                 if(data.status){
                                     alert(data.message);
+                                    window.location.href='/editor/?exerc_id='+data.exerc_id;
                                 }else{
                                     alert(data.error);
                                 }

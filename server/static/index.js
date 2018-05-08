@@ -80,7 +80,7 @@ function delete_exerc(event){
     delete_button = event.currentTarget
     ajax=$.ajax({
         url:'/api/v1/practices',
-        data:JSON.stringify({"delect_id":delete_button.id}),
+        data:JSON.stringify({"delete_id":delete_button.id}),
         contentType: 'application/json; charset=UTF-8',
         type:'DELETE',
         dataType:'json',
