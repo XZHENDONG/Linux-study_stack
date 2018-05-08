@@ -1,0 +1,20 @@
+﻿<Window x:Class="WpfApp1.login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="Linux教学平台" Height="401.388" Width="416.107" MinWidth="429" MinHeight="416" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid HorizontalAlignment="Center" Height="234" Margin="48,50,55,101" VerticalAlignment="Center" Width="318">
+            <Label Content="账号：" HorizontalAlignment="Left" Margin="48,64,0,0" VerticalAlignment="Top" Height="28" Width="40"/>
+            <Label Content="密码：" HorizontalAlignment="Left" Margin="48,108,0,0" VerticalAlignment="Top" Width="40" Height="28" RenderTransformOrigin="0.45,1.643"/>
+            <TextBox HorizontalAlignment="Left" Height="28" Margin="105,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" FontSize="14"/>
+            <PasswordBox HorizontalAlignment="Left" Margin="105,108,0,0" VerticalAlignment="Top" Width="161" Height="28" FontSize="14"/>
+            <Button Content="登陆" HorizontalAlignment="Left" Margin="63,179,0,0" VerticalAlignment="Top" Width="86" Height="45"/>
+            <Button Content="注册" HorizontalAlignment="Left" Margin="177,179,0,0" VerticalAlignment="Top" Width="89" Height="45"/>
+        </Grid>
+
+    </Grid>
+</Window>

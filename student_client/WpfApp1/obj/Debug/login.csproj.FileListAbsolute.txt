@@ -1,0 +1,17 @@
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\WpfApp1.exe
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\WpfApp1.pdb
+D:\C#\tech_stack\WpfApp1\WpfApp1\bin\Debug\WpfApp1.exe.config
+D:\C#\tech_stack\WpfApp1\WpfApp1\bin\Debug\WpfApp1.exe
+D:\C#\tech_stack\WpfApp1\WpfApp1\bin\Debug\WpfApp1.pdb
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\login.g.cs
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\App.g.cs
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\WpfApp1_MarkupCompile.cache
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\WpfApp1_MarkupCompile.lref
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\login.baml
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\WpfApp1.g.resources
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\WpfApp1.Properties.Resources.resources
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\login.csproj.GenerateResource.cache
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\login.csproj.CoreCompileInputs.cache
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\login.csprojResolveAssemblyReference.cache
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\student_client.g.cs
+D:\C#\tech_stack\WpfApp1\WpfApp1\obj\Debug\student_client.baml
