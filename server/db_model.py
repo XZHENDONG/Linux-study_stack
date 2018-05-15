@@ -33,7 +33,7 @@ class User(UserMixin, db.Model):
 	ID = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(30))
 	passwd = db.Column(db.String(128))
-	role = db.Column(db.ENUM(u'admin', u'student', u'teacher'))
+	role = db.Column(db.Enum(u'admin', u'student', u'teacher'))
 	account = db.Column(db.String(45), unique=True)
 	
 	def get_id(self):

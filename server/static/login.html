@@ -10,19 +10,22 @@
 <div id="login">
     <h1>Linux实践教学平台教师端</h1>
     <form action="/api/v1/login/" method="post" role="form">
+        <!--<input type="text" required="required" placeholder="账号" name="account"></input>-->
         <input type="text" required="required" placeholder="用户名" name="username"></input>
         <input type="password" required="required" placeholder="密码" name="passwd"></input>
-        <button class="but" type="button">登录</button>
+        <!--<input type="password" required="required" placeholder="确认密码" name="passwd_comf"></input>-->
+        <button id="login_btn"  class="but" type="button">登陆</button>
+        <button class="but" type="button" style="margin-top:5px;">返回</button>
     </form>
 </div>
 <script type="text/javascript">
     $(function(){
-        $('.but').click(function(){
+        $('#login_btn').click(function(){
             var username=$('input[name="username"]').val();
             var passwd=$('input[name="passwd"]').val();
             $.ajax({
                 url:'/api/v1/login/',
-                data:JSON.stringify({'username':username,'passwd':passwd}),
+                data:JSON.stringify({'account':username,'passwd':passwd,'role':'teacher'}),
                 contentType: 'application/json; charset=UTF-8',
                 type:'POST',
                 dataType:'json'

@@ -6,7 +6,31 @@
     <title>Title</title>
 </head>
 <body>
-<div id="main" style="width: 600px;height:400px;"></div>
+<div style="width: 100%;">
+    <div id="main" style="width: 50%;height:400px;display: inline-block;"></div>
+    <div id="container" style="width: 49%;height:400px;display: inline-block;"></div>
+</div>
+<table id="practice_tb" style="table-layout:fixed;" width="100%" border="1">
+    <thead>
+    <tr>
+        <th style="text-align:center">账号</th>
+        <th style="text-align:center">姓名</th>
+        <th style="text-align:center">分数</th>
+        <th style="text-align:center">完成状态</th>
+        <th style="text-align:center">完成时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td style="text-align:center">2014082010</td>
+        <td style="text-align:center">冼镇东</td>
+        <td style="text-align:center">50</td>
+        <th style="text-align:center">完成</th>
+        <th style="text-align:center">2018年5月9日 14:54:15</th>
+    </tr>
+
+    </tbody>
+</table>
 <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'));
@@ -14,25 +38,80 @@
         // 指定图表的配置项和数据
         var option = {
             title: {
-                text: 'ECharts 入门示例'
+                text: '各分数段人数'
             },
             tooltip: {},
             legend: {
-                data:['销量']
+                data:['分数']
             },
             xAxis: {
-                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                data: ["20","40","60","80","100","120"]
             },
             yAxis: {},
             series: [{
-                name: '销量',
+                name: '分数',
                 type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
+                data: [0, 0, 1, 0, 0, 0]
             }]
         };
 
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
+
+
+
+
+
+
+</script>
+<script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+option = {
+    title : {
+        text: '学生练习情况',
+        subtext: '',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: ['完成人数','没有练习','练习但未完成']
+    },
+    series : [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:[
+                {value:1, name:'完成人数'},
+                {value:0, name:'没有练习'},
+                {value:0, name:'练习但未完成'},
+            ],
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+
+
+
 
 </script>
 </body>

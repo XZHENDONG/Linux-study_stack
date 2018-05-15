@@ -8,12 +8,16 @@
         Title="Linux教学平台" Height="401.388" Width="416.107" MinWidth="429" MinHeight="416" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid HorizontalAlignment="Center" Height="234" Margin="48,50,55,101" VerticalAlignment="Center" Width="318">
-            <Label Content="账号：" HorizontalAlignment="Left" Margin="48,64,0,0" VerticalAlignment="Top" Height="28" Width="40"/>
+            <Label Content="登陆账号：" HorizontalAlignment="Left" Margin="24,64,0,0" VerticalAlignment="Top" Height="28" Width="64"/>
             <Label Content="密码：" HorizontalAlignment="Left" Margin="48,108,0,0" VerticalAlignment="Top" Width="40" Height="28" RenderTransformOrigin="0.45,1.643"/>
-            <TextBox HorizontalAlignment="Left" Height="28" Margin="105,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" FontSize="14"/>
-            <PasswordBox HorizontalAlignment="Left" Margin="105,108,0,0" VerticalAlignment="Top" Width="161" Height="28" FontSize="14"/>
-            <Button Content="登陆" HorizontalAlignment="Left" Margin="63,179,0,0" VerticalAlignment="Top" Width="86" Height="45"/>
-            <Button Content="注册" HorizontalAlignment="Left" Margin="177,179,0,0" VerticalAlignment="Top" Width="89" Height="45"/>
+            <TextBox x:Name="account_text" HorizontalAlignment="Left" Height="28" Margin="105,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" FontSize="14"/>
+            <PasswordBox x:Name="passwd_text" HorizontalAlignment="Left" Margin="105,108,0,0" VerticalAlignment="Top" Width="161" Height="28" FontSize="14"/>
+            <Button x:Name="login_button" Content="登陆" HorizontalAlignment="Left" Margin="63,179,0,0" VerticalAlignment="Top" Width="86" Height="45" Click="login_button_Click"/>
+            <Button x:Name="register_button" Content="注册" HorizontalAlignment="Left" Margin="177,179,0,0" VerticalAlignment="Top" Width="89" Height="45" Click="Button_Click"/>
+            <Label x:Name="comfirm_label" Content="确认密码：" HorizontalAlignment="Left" Margin="24,141,0,0" VerticalAlignment="Top" Width="64" Height="28" RenderTransformOrigin="0.45,1.643" Visibility="Hidden"/>
+            <PasswordBox x:Name="comfirm_passwd" HorizontalAlignment="Left" Margin="105,141,0,0" VerticalAlignment="Top" Width="161" Height="28" FontSize="14" Visibility="Hidden"/>
+            <Label x:Name="username_label" Content="用户名：" HorizontalAlignment="Left" Margin="35,31,0,0" VerticalAlignment="Top" Height="28" Width="53" Visibility="Hidden"/>
+            <TextBox x:Name="username_textbox" HorizontalAlignment="Left" Height="28" Margin="105,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" FontSize="14" Visibility="Hidden"/>
         </Grid>
 
     </Grid>

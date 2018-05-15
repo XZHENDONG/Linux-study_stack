@@ -15,7 +15,7 @@
             </MenuItem>
         </Menu>
         <ToolBar VerticalAlignment="Top" Margin="0,26,0,0" Height="35">
-            <Button Content="开机" Margin="0,4" Width="55"/>
+            <Button Content="开机" Margin="0,4" Width="55" Click="Button_Click"/>
             <Button Content="重启" Margin="0,4" Width="55"/>
             <Button Content="关机" Margin="0,4" Width="55"/>
         </ToolBar>
@@ -23,8 +23,7 @@
         <TabControl Margin="0,61,0,0">
             <TabItem Header="题目" Margin="0,0,-29,0">
                 <Grid Margin="7,-1,7,0">
-                    <WebBrowser Margin="0,55,0,67"/>
-                    <Label x:Name="timers" Content="00:00:00" HorizontalAlignment="Right" VerticalAlignment="Top" Height="50" Width="153" FontSize="36"/>
+                    <WebBrowser x:Name="webbrowser" Margin="0,10,0,67"/>
                     <Button Content="提交" HorizontalAlignment="Right" Margin="0,0,10,19" VerticalAlignment="Bottom" Width="107" Height="43"/>
                     <Button Content="跳过" HorizontalAlignment="Right" Margin="0,0,137,19" VerticalAlignment="Bottom" Width="107" Height="43" AutomationProperties.IsRequiredForForm="True"/>
                     <Button Content="上一题" Margin="10,0,0,19" Width="107" Height="43" AutomationProperties.IsRequiredForForm="True" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
@@ -32,15 +31,16 @@
             </TabItem>
             <TabItem Header="目录" Margin="0,0,-28,0" HorizontalAlignment="Right" Width="65" >
                 <Grid Margin="7,0">
-                    <DataGrid x:Name="datagrid" AutoGenerateColumns="False" ColumnWidth="*">
+                    <DataGrid x:Name="datagrid" AutoGenerateColumns="False" ColumnWidth="*"  >
+                        
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="编号" Binding="{Binding Name}"/>
-                            <DataGridTextColumn Header="题目" Binding="{Binding Name}"/>
-                            <DataGridTextColumn Header="状态" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="编号" Binding="{Binding num}" />
+                            <DataGridTextColumn Header="题目" Binding="{Binding title}"/>
+                            <DataGridTextColumn Header="状态" Binding="{Binding status}"/>
                             <DataGridTemplateColumn Header="操作">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button  Content="{Binding Name}"/>
+                                        <Button  Content="开始练习"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
