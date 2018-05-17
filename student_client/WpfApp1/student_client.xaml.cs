@@ -17,6 +17,7 @@ using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
 using Microsoft.Scripting.Runtime;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace WpfApp1
 {
@@ -36,6 +37,7 @@ namespace WpfApp1
         private Person person;
         public Person[] Persons;
         private ScriptEngine pyEngine;
+        private int nextpage = 0;
         public student_client()
         {
             InitPerson();
@@ -44,21 +46,12 @@ namespace WpfApp1
             
             webbrowser.NavigateToString(ConvertExtendedASCII(test));
             datagrid.ItemsSource = this.Persons;
-            var options = new Dictionary<string, object>();
-            options["Frames"] = true;
-            options["FullFrames"] = true;
-            pyEngine = Python.CreateEngine(options);
-            ICollection<string> Paths = pyEngine.GetSearchPaths();
-            Paths.Add(@"C:\Python27\Lib");
-            Paths.Add(@"C:\Python27\");
-            Paths.Add(@"C:\Python27\DLLs");
-            
-            Paths.Add(@"C:\Program Files\IronPython 2.7\Lib");
-            Paths.Add(@"C:\Program Files\IronPython 2.7\Lib\site-packages");
-            pyEngine.SetSearchPaths(Paths);
-            
+            GetTable();
 
         }
+
+
+
         public static string ConvertExtendedASCII(string HTML)
         {
             StringBuilder str = new StringBuilder();
@@ -96,14 +89,19 @@ namespace WpfApp1
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-
+            string cmd = vmCmd + @" --start ";
             string output = "";
-            RunCmd(@"python .\vm_control.py", out output ,1);
-
+            RunCmd(cmd, out output ,1); 
         }
 
         private static string CmdPath = @"C:\Windows\System32\cmd.exe";
+        private static string URL = @" http://127.0.0.1:9000";
+        private static string httpCmd = @"python ./http_request.py ";
+        private static string post = @" --post ";
+        private static string get = @" --get ";
+        private static string put = @" --put ";
+        private static string data = @" --data ";
+        private static string vmCmd = @"python .\vm_control.py ";
 
         public static void RunCmd(string cmd, out string output, int asncy)
         {
@@ -127,10 +125,37 @@ namespace WpfApp1
                 output = "";
                 if (asncy == 0) {
                     output = p.StandardOutput.ReadToEnd();
+                    string[] csvtxt = output.Split('\n');
+                    output = csvtxt[csvtxt.Length - 2];
                     p.WaitForExit();//等待程序执行完退出进程
                 }   
                 p.Close();
             }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            string cmd = vmCmd + @" --shutdown ";
+            string output = "";
+            RunCmd(cmd, out output, 1);
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            string cmd = vmCmd + @" --reboot ";
+            string output = "";
+            RunCmd(cmd, out output, 1);
+        }
+
+        private void GetTable()
+        {
+            string cmd = httpCmd + get + URL + "/api/v1/practices" + data + "table_rows=" + nextpage;
+            string output = "";
+            RunCmd(cmd, out output, 0);
+            output = output.Replace("u'", "'");
+            JObject responejson= JObject.Parse(output);
+            MessageBox.Show(output);
+
         }
     }
 

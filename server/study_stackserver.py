@@ -95,14 +95,12 @@ class PracticeAPI(Resource):
 					check_dict['score'] = i.score
 					respone['checker'].append(check_dict)
 				return respone
-			return
 		if request.args.get('table_rows'):
 			page = int(request.args.get('table_rows')) + 1
 			result = Exercise.query.paginate(page, per_page=10)
 			respone = {}
 			respone['next'] = result.has_next
 			respone['next_page'] = result.page + 1
-			respone['exerc'] = []
 			respone['exerc'] = []
 			for i in result.items:
 				exerc_dict = {}
@@ -117,7 +115,9 @@ class PracticeAPI(Resource):
 		markdown = markdown.split('```json')
 		checker_json = markdown[-1].strip('```')
 		checker_dict = demjson.decode(checker_json, encoding='utf8')
-		exerc = Exercise(title=request.json['markdown'], title_html=request.json['html'])
+		
+		html=request.json['html'].split('<pre><code class="lang-json">')[0]
+		exerc = Exercise(title=request.json['markdown'], title_html=html)
 		db.session.add(exerc)
 		db.session.commit()
 		try:
@@ -143,7 +143,8 @@ class PracticeAPI(Resource):
 		try:
 			result = Exercise.query.get(request.json['exerc_id'])
 			result.title = request.json['markdown']
-			result.title_html = request.json['html']
+			html = request.json['html'].split('<pre><code class="lang-json">')[0]
+			result.title_html = html
 			check_result = Checker.query.filter_by(exercID=request.json['exerc_id']).all()
 			for i in xrange(len(check_result)):
 				if i > len(checker_list):

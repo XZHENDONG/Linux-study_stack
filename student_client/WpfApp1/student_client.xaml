@@ -16,8 +16,8 @@
         </Menu>
         <ToolBar VerticalAlignment="Top" Margin="0,26,0,0" Height="35">
             <Button Content="开机" Margin="0,4" Width="55" Click="Button_Click"/>
-            <Button Content="重启" Margin="0,4" Width="55"/>
-            <Button Content="关机" Margin="0,4" Width="55"/>
+            <Button Content="重启" Margin="0,4" Width="55" Click="Button_Click_2"/>
+            <Button Content="关机" Margin="0,4" Width="55" Click="Button_Click_1"/>
         </ToolBar>
 
         <TabControl Margin="0,61,0,0">

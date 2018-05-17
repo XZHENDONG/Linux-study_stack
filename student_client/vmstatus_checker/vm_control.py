@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import argparse
 import os
 import time
 
@@ -63,7 +64,23 @@ class StackVM(object):
 
 
 if __name__ == '__main__':
+	parser = argparse.ArgumentParser()
+	parser.add_argument('start',action='store_true')
+	parser.add_argument('shutdown',action='store_true')
+	parser.add_argument('reboot',action='store_true')
+	parser.add_argument('importmachine')
+	parser.add_argument('export',action='store_true')
+	args = parser.parse_args()
 	vm_ctl = StackVM()
-	vm_ctl.vm_start()
-	print vm_ctl.get_ip()
-	vm_ctl.vm_shutdown()
+	if args.start:
+		vm_ctl.vm_start()
+	if args.shutdown:
+		vm_ctl.vm_shutdown()
+	if args.reboot:
+		vm_ctl.vm_shutdown()
+		vm_ctl.vm_start()
+	if args.importmachine:
+		vm_ctl.vm_import(args.importmachine)
+	
+	
+	

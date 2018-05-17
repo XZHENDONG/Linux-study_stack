@@ -51,3 +51,6 @@ D:\python\LinuxTechStack\student_client\WpfApp1\obj\Debug\WpfApp1.pdb
 D:\python\LinuxTechStack\student_client\WpfApp1\obj\Debug\WpfApp1_Content.g.cs
 D:\python\LinuxTechStack\student_client\WpfApp1\bin\Debug\vm_checker.py
 D:\python\LinuxTechStack\student_client\WpfApp1\bin\Debug\vm_control.py
+D:\python\LinuxTechStack\student_client\WpfApp1\bin\Debug\Newtonsoft.Json.dll
+D:\python\LinuxTechStack\student_client\WpfApp1\bin\Debug\Newtonsoft.Json.xml
+D:\python\LinuxTechStack\student_client\WpfApp1\bin\Debug\http_request.py
