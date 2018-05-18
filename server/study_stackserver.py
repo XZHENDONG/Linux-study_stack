@@ -32,10 +32,25 @@ def load_user(user_id):
 
 class CheckerResultAPI(Resource):
 	def get(self):
-		pass
+		if request.args.get('userID') and request.args.get('exercID'):
+			checker_result = Checker.query.filter_by(exercID=request.args.get('exercID')).all()
+			checkID = [checker.ID for checker in checker_result]
+			result = CheckResult.query.filter(CheckResult.checkerID.in_(checkID),
+			                                  CheckResult.userID == request.args.get('userID')).all()
+			if not result:
+				return {'status': 1, 'message': '未完成'}
+			
+			temp = {i.checkerID: i.status for i in result}
+			if 0 in temp.values():
+				return {'status': 1, 'message': '未完成'}
+			else:
+				return {'status': 1, 'message': '完成'}
 	
 	def put(self):
 		pass
+
+
+api.add_resource(CheckerResultAPI, API_VERSION + '/checkerresult/')
 
 
 class LoginAPI(Resource):
@@ -108,15 +123,14 @@ class PracticeAPI(Resource):
 				exerc_dict['exerc_markdown'] = i.title
 				exerc_dict['exerc_html'] = i.title_html
 				respone['exerc'].append(exerc_dict)
-			return respone
+			return jsonify(respone)
 	
 	def post(self):
 		markdown = request.json['markdown']
 		markdown = markdown.split('```json')
 		checker_json = markdown[-1].strip('```')
 		checker_dict = demjson.decode(checker_json, encoding='utf8')
-		
-		html=request.json['html'].split('<pre><code class="lang-json">')[0]
+		html = request.json['html'].split('<pre><code class="lang-json">')[0]
 		exerc = Exercise(title=request.json['markdown'], title_html=html)
 		db.session.add(exerc)
 		db.session.commit()

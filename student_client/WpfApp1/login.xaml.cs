@@ -22,9 +22,11 @@ namespace WpfApp1
     /// </summary>
     public partial class login : Window
     {
+        private int userid;
         public login()
         {
             InitializeComponent();
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -55,7 +57,8 @@ namespace WpfApp1
             string passwd = passwd_text.Password; 
             if (Auth(account, passwd))
             {
-                student_client student_Client = new student_client();
+                Student_client student_Client = new Student_client();
+                student_Client.userID = this.userid;
                 student_Client.Show();
                 this.Close();
             }
@@ -83,8 +86,7 @@ namespace WpfApp1
             //Responejson respone = JsonConvert.DeserializeObject<Responejson>(output);
             JObject responejson = JObject.Parse(output);
             if ((int)responejson["status"]==1) {
-                MessageBox.Show(output);
-                Console.WriteLine(output);
+                userid = (int)responejson["user_id"];
                 return true;
             }
             return false;

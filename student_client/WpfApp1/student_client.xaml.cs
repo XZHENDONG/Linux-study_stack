@@ -18,36 +18,44 @@ using Microsoft.Scripting.Hosting;
 using Microsoft.Scripting.Runtime;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace WpfApp1
 {
-    public class Person
+    public class Exerc
     {
         
-        public int num { get; set; }
-        public string title { get; set; }
+        public int exerc_id { get; set; }
+        public string exerc_markdown { get; set; }
+        public string exerc_html { get; set; }
         public string status { get; set; }
 
+    }
+
+    public class ExercRow {
+        public int num { get; set; }
+        public int exerc_id { get; set; }
+        public string title { get; set; }
+        public string status { get; set; }
     }
     /// <summary>
     /// student_client.xaml 的交互逻辑
     /// </summary>
-    public partial class student_client : Window
+    public partial class Student_client : Window
     {
-        private Person person;
-        public Person[] Persons;
-        private ScriptEngine pyEngine;
+        
+        public ExercRow[] exercs;
         private int nextpage = 0;
-        public student_client()
+        private bool has_next = true;
+        private Exerc[] exerc_list;
+        public int userID=1;
+        public Student_client()
         {
-            InitPerson();
             InitializeComponent();
-            string test = "<div class=\"markdown-body editormd-preview-container\" previewcontainer=\"true\" style=\"padding: 20px;\"><h2 id=\"h2-ls-\"><a name=\"ls练习题\" class=\"reference-link\"></a><span class=\"header-link octicon octicon-link\"></span>ls练习题</h2><p>运行ls命令。</p> </div>";
-            
-            webbrowser.NavigateToString(ConvertExtendedASCII(test));
-            datagrid.ItemsSource = this.Persons;
             GetTable();
-
+            datagrid.ItemsSource = this.exercs;
+            string test = exerc_list[0].exerc_html;
+            webbrowser.NavigateToString(ConvertExtendedASCII(test));
         }
 
 
@@ -71,21 +79,6 @@ namespace WpfApp1
             return str.ToString();
         }
 
-        private void InitPerson()
-        {
-            
-            this.Persons = new Person[2];
-            this.Persons[0] = new Person();
-            this.Persons[0].num = 1;
-            this.Persons[0].title = "ls练习题";
-            this.Persons[0].status = "完成";
-            this.Persons[1] = new Person();
-            this.Persons[1].num = 2;
-            this.Persons[1].title = "cd练习题";
-            this.Persons[1].status = "未完成";
-
-
-        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -146,17 +139,43 @@ namespace WpfApp1
             string output = "";
             RunCmd(cmd, out output, 1);
         }
+        private void title_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ExercRow tableList = ((Button)sender).DataContext as ExercRow;
+            MessageBox.Show(tableList.exerc_id.ToString());
+        }
 
         private void GetTable()
         {
-            string cmd = httpCmd + get + URL + "/api/v1/practices" + data + "table_rows=" + nextpage;
+            string cmd = httpCmd + get + URL + "/api/v1/practices" + data + "{'table_rows':" + nextpage+"}";
             string output = "";
             RunCmd(cmd, out output, 0);
-            output = output.Replace("u'", "'");
+            output = output.Replace("u'", "'").Replace("'next': False", "'next': false").Replace("'next': True", "'next': true");
             JObject responejson= JObject.Parse(output);
-            MessageBox.Show(output);
+            nextpage = (int)responejson["next_page"];
+            has_next = responejson["next"].Value<bool>();
+            JArray exerc_arry = JArray.Parse(responejson["exerc"].ToString());
+            this.exerc_list = new Exerc[exerc_arry.Count];
+            this.exercs = new ExercRow[exerc_arry.Count];
 
+
+            for (int i = 0; i < exerc_arry.Count; i++)
+            {
+                this.exerc_list[i] = JsonConvert.DeserializeObject<Exerc>(exerc_arry[i].ToString());
+                this.exercs[i] = new ExercRow();
+                this.exercs[i].num = i+1;
+                this.exercs[i].exerc_id = exerc_list[i].exerc_id;
+                this.exercs[i].title = exerc_list[i].exerc_markdown.Split('\n')[0].Trim('#');
+                cmd = httpCmd + get + URL + "/api/v1/checkerresult" + data + "{'userID':" + this.userID + @",'exercID':" + exerc_list[i].exerc_id + "}";
+                output = "";
+                RunCmd(cmd, out output, 0);
+                output = output.Replace("u'", "'");
+                responejson = JObject.Parse(output);
+                exercs[i].status = responejson["message"].Value<string>();
+            }
         }
+
+
     }
 
 

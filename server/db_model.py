@@ -47,6 +47,7 @@ class CheckResult(db.Model):
 	checkerID = db.Column(db.ForeignKey(u'checker.ID'), primary_key=True, nullable=False, index=True)
 	stdout = db.Column(db.String)
 	stderr = db.Column(db.String)
+	status = db.Column(db.Integer)
 	time = db.Column(db.DateTime, nullable=False,
 	                 server_default=db.text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
 	
