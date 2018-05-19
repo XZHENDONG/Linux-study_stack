@@ -34,10 +34,19 @@ namespace WpfApp1
 
     public class ExercRow {
         public int num { get; set; }
-        public int exerc_id { get; set; }
         public string title { get; set; }
         public string status { get; set; }
+        public Exerc exerc { get; set; }
     }
+
+    public class Checker {
+        public int ID;
+        public string command;
+        public string stdout;
+        public string stderr;
+        public string title;
+    }
+
     /// <summary>
     /// student_client.xaml 的交互逻辑
     /// </summary>
@@ -49,13 +58,14 @@ namespace WpfApp1
         private bool has_next = true;
         private Exerc[] exerc_list;
         public int userID=1;
+        public Checker[] checkers=new Checker[0];
+
         public Student_client()
         {
             InitializeComponent();
             GetTable();
             datagrid.ItemsSource = this.exercs;
-            string test = exerc_list[0].exerc_html;
-            webbrowser.NavigateToString(ConvertExtendedASCII(test));
+            
         }
 
 
@@ -139,10 +149,24 @@ namespace WpfApp1
             string output = "";
             RunCmd(cmd, out output, 1);
         }
+
         private void title_Button_Click(object sender, RoutedEventArgs e)
         {
             ExercRow tableList = ((Button)sender).DataContext as ExercRow;
-            MessageBox.Show(tableList.exerc_id.ToString());
+            webbrowser.NavigateToString(ConvertExtendedASCII(tableList.exerc.exerc_html));
+            main_tabctl.SelectedIndex = 0;
+            string cmd = httpCmd + get + URL + "/api/v1/practices" + data + "{'exerc_id':" + tableList.exerc.exerc_id + "}";
+            string output = "";
+            RunCmd(cmd, out output, 0);
+            output = output.Replace("u'", "'");
+            JObject responejson = JObject.Parse(output);
+            JArray checker_list = JArray.Parse(responejson["checker"].ToString());
+            checkers = new Checker[checker_list.Count];
+            for (int i = 0; i < checker_list.Count; i++) {
+                checkers[i] = JsonConvert.DeserializeObject<Checker>(checker_list[i].ToString());
+            }
+            
+
         }
 
         private void GetTable()
@@ -164,7 +188,7 @@ namespace WpfApp1
                 this.exerc_list[i] = JsonConvert.DeserializeObject<Exerc>(exerc_arry[i].ToString());
                 this.exercs[i] = new ExercRow();
                 this.exercs[i].num = i+1;
-                this.exercs[i].exerc_id = exerc_list[i].exerc_id;
+                this.exercs[i].exerc = exerc_list[i];
                 this.exercs[i].title = exerc_list[i].exerc_markdown.Split('\n')[0].Trim('#');
                 cmd = httpCmd + get + URL + "/api/v1/checkerresult" + data + "{'userID':" + this.userID + @",'exercID':" + exerc_list[i].exerc_id + "}";
                 output = "";
@@ -175,7 +199,14 @@ namespace WpfApp1
             }
         }
 
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            if (checkers.Length<1) {
+                MessageBox.Show("请先选择习题");
+                return;
+            }
 
+        }
     }
 
 
