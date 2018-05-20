@@ -58,7 +58,8 @@ function createTable(title_list){
                 status_button.setAttribute("type", "button")
                 status_button.setAttribute("class", "btn btn-primary form-control")
                 status_button.setAttribute("value", "查看学生数据")
-                status_button.setAttribute("title_id",title_list[i].exerc_id)
+                status_button.setAttribute("id",title_list[i].exerc_id)
+                status_button.setAttribute("onclick",'student_status(event)')
                 delete_button= document.createElement("input");
                 delete_button.setAttribute("type", "button")
                 delete_button.setAttribute("class", "btn btn-primary form-control")
@@ -91,4 +92,10 @@ function delete_exerc(event){
                 alert(data.error);
             }
     });
+}
+
+function student_status(event){
+    status_button = event.currentTarget
+    status_iframe=document.getElementById("status_iframe");
+    status_iframe.setAttribute("src", "/student_status/?exerc_id="+status_button.id);
 }

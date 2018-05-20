@@ -45,13 +45,13 @@
                 data:['分数']
             },
             xAxis: {
-                data: ["20","40","60","80","100","120"]
+                type: 'value'
             },
             yAxis: {},
             series: [{
                 name: '分数',
                 type: 'bar',
-                data: [0, 0, 1, 0, 0, 0]
+                data: [0, 0, 50, 0, 0, 0]
             }]
         };
 
@@ -82,7 +82,7 @@ option = {
     legend: {
         orient: 'vertical',
         left: 'left',
-        data: ['完成人数','没有练习','练习但未完成']
+        data: ['完成','未完成']
     },
     series : [
         {
@@ -93,7 +93,6 @@ option = {
             data:[
                 {value:1, name:'完成人数'},
                 {value:0, name:'没有练习'},
-                {value:0, name:'练习但未完成'},
             ],
             itemStyle: {
                 emphasis: {

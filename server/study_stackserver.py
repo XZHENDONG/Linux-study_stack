@@ -47,7 +47,31 @@ class CheckerResultAPI(Resource):
 				return {'status': 1, 'message': '完成'}
 	
 	def put(self):
-		pass
+		print request.json
+		request_checker = request.json['checker']
+		failID = request.json['failID']
+		result = CheckResult.query.filter(CheckResult.userID == request.json['user_id'],
+		                                  CheckResult.checkerID.in_(map(int, request.json['checker'].keys()))).all()
+		for i in result:
+			ID = str(i.checkerID)
+			if i.status == 1:
+				request_checker.pop(ID)
+				if i.checkerID in failID:
+					failID.pop(failID.index(i.checkerID))
+			else:
+				i.stdout = request_checker[ID]['stdout']
+				i.stderr = request_checker[ID]['stderr']
+				i.status = int(i.checkerID not in failID)
+				request_checker.pop(ID)
+		if request_checker:
+			for i in request_checker:
+				checker_result = CheckResult(userID=request.json['user_id'],
+				                             checkerID=int(i),
+				                             stdout=request_checker[i]['stdout'],
+				                             stderr=request_checker[i]['stderr'],
+				                             status=int(i.checkerID not in failID))
+				db.session.add(checker_result)
+		db.session.commit()
 
 
 api.add_resource(CheckerResultAPI, API_VERSION + '/checkerresult/')
@@ -222,6 +246,39 @@ def editor():
 @app.route('/student_status/', methods=['GET'])
 @login_required
 def student_status():
+	request.args.get('exerc_id')
+	checker_list = Checker.query.filter_by('exerc_id').all()
+	checkerID_list = []
+	for i in checker_list:
+		checkerID_list.append(i.checkerID)
+	checker_result = CheckResult.query.filter(CheckResult.checkerID.in_(checkerID_list)).all()
+	users = User.query.filter_by(role='student').all()
+	status_dict = {}
+	status_dict['student'] = {}
+	for i in users:
+		status_dict['student'][i.ID] = status_dict['student'].get(i.userID, {})
+		status_dict['student'][i.ID]['account'] = i.account
+		status_dict['student'][i.ID]['username'] = i.username
+		status_dict['student'][i.ID]['score'] = 0
+		status_dict['student'][i.ID]['time'] = ""
+		status_dict['student'][i.ID]['status'] = 0
+	
+	for i in checker_result:
+		status_dict['student'][i.userID] = status_dict['student'].get(i.userID, {})
+		status_dict['student'][i.userID]['account'] = i.user.account
+		status_dict['student'][i.userID]['username'] = i.user.username
+		status_dict['student'][i.userID]['score'] = status_dict['student'][i.userID].get('score', 0) + i.checker.score
+		status_dict['student'][i.userID]['time'] = i.time
+		status_dict['student'][i.userID]['status'] = status_dict['student'][i.userID].get('status', 1) & i.status
+	
+	status_dict['score'] = {}
+	status_dict['finshed'] = 0
+	for i in status_dict['student']:
+		student_score = status_dict['student'][i]['score']
+		status_dict['score'][student_score] = status_dict['score'].get(student_score, 0) + 1
+		if status_dict['student'][i.userID]['status'] == 1:
+			status_dict['finsh'] = status_dict.get('finsh', 0) + 1
+	status_dict['unfinsh'] = len(status_dict['student']) - status_dict['finsh']
 	return app.send_static_file('student_status.html')
 
 

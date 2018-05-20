@@ -128,6 +128,8 @@ namespace WpfApp1
                 output = "";
                 if (asncy == 0) {
                     output = p.StandardOutput.ReadToEnd();
+                    Console.WriteLine(output);
+                    Console.WriteLine(p.StandardError.ReadToEnd());
                     string[] csvtxt = output.Split('\n');
                     output = csvtxt[csvtxt.Length - 2];
                     p.WaitForExit();//等待程序执行完退出进程
@@ -201,9 +203,38 @@ namespace WpfApp1
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            if (checkers.Length<1) {
+            if (this.checkers.Length<1) {
                 MessageBox.Show("请先选择习题");
                 return;
+            }
+            JObject checker_request = new JObject();
+            JObject checkers_json = new JObject();
+            int count = this.checkers.Length;
+            for (int i = 0; i < count; i++) {
+                JObject checker = new JObject();
+                checker.Add("command", this.checkers[i].command);
+                checker.Add("stdout", this.checkers[i].stdout);
+                checker.Add("stderr", this.checkers[i].stderr);
+                checkers_json.Add(this.checkers[i].ID.ToString(), checker);
+            }
+            checker_request.Add("user_id", userID);
+            checker_request.Add("checker_list",checkers_json);
+
+
+            string cmd = vmCmd+" --checker "+"^"+JsonConvert.SerializeObject(checker_request) +"^";
+            cmd = cmd.Replace("\"", "'").Replace("^","\"");
+            string output = "";
+            RunCmd(cmd, out output, 0);
+            output = output.Replace("u'", "'");
+            JObject responejson = JObject.Parse(output);
+            JArray failID = JArray.Parse(responejson["failID"].ToString());
+            if (failID.Count >= 1)
+            {
+                MessageBox.Show("检查未通过，请确保按照习题要求完成操作。");
+            }
+            else {
+                MessageBox.Show("检查通过");
+                GetTable();
             }
 
         }
