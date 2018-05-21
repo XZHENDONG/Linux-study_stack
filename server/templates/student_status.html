@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.common.min.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<div style="width: 100%;">
+    <div id="main" style="width: 50%;height:400px;display: inline-block;"></div>
+    <div id="container" style="width: 49%;height:400px;display: inline-block;"></div>
+</div>
+<table id="practice_tb" style="table-layout:fixed;" width="100%" border="1">
+    <thead>
+    <tr>
+        <th style="text-align:center">账号</th>
+        <th style="text-align:center">姓名</th>
+        <th style="text-align:center">分数</th>
+        <th style="text-align:center">完成状态</th>
+        <th style="text-align:center">完成时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for studentID in status_dict['student'] %}
+        <tr>
+            <td style="text-align:center">{{status_dict['student'][studentID]['account']}}</td>
+            <td style="text-align:center">{{status_dict['student'][studentID]['username']}}</td>
+            <td style="text-align:center">{{status_dict['student'][studentID]['score']}}</td>
+            <th style="text-align:center">{{status_dict['student'][studentID]['status']}}</th>
+            <th style="text-align:center">{{status_dict['student'][studentID]['time']}}</th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<script type="text/javascript">
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('main'));
+
+// 指定图表的配置项和数据
+var option = {
+                title : {
+                    text: '各分数人数',
+                    subtext: '',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: {{status_dict['score'].keys()}}
+                },
+                series : [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:[
+                        {% for score in status_dict['score'] %}
+                            {value:{{status_dict['score'][score]}}, name:'{{score}}'},
+                        {% endfor %}
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+
+
+
+
+
+
+</script>
+<script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+option = {
+    title : {
+        text: '完成情况',
+        subtext: '',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: ['完成','未完成']
+    },
+    series : [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:[
+                {value:{{status_dict['finshed']}}, name:'完成'},
+                {value:{{status_dict['unfinsh']}}, name:'未完成'},
+            ],
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+
+
+
+
+</script>
+</body>
+</html>
